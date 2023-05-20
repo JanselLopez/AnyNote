@@ -1,10 +1,11 @@
 export class Task {
-  constructor(id, title, importance, end_date, owner, place) {
+  constructor(id, title, importance, endDate, idOwner, place, mdContent) {
     this.id = id;
     this.title = title;
     this.importance = importance;
-    this.end_date = end_date;
-    this.owner = owner;
+    this.endDate = endDate;
+    this.idOwner = idOwner;
     this.place = place;
+    this.mdContent = mdContent;
   }
 }

@@ -14,15 +14,27 @@ import {TextInput, Slider} from 'react-native';
 import {TaskContext} from '../context/TaskContext';
 import {ItemTask} from './ItemTask';
 import DatePicker from 'react-native-date-picker';
+import {getTasks} from '../services/tasks';
 
 export function TasksScreen({navigation}) {
-  const {data} = useContext(TaskContext);
+  const [data, setData] = useState();
   const [selectedId, setSelectedId] = useState();
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const tasks = await getTasks();
+      setData(tasks);
+    };
+    fetchTasks();
+  }, []);
   useEffect(() => {
     selectedId &&
       navigation.navigate({
         name: 'Task',
-        params: {taskId: selectedId},
+        params: {
+          taskId: selectedId,
+          mdContent: data.find(item => selectedId === item.id).mdContent,
+        },
         merge: true,
       });
     setSelectedId(undefined);
@@ -30,17 +42,18 @@ export function TasksScreen({navigation}) {
 
   return (
     <>
-      {data && (
-        <View>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-              marginLeft: 'auto',
-            }}
-            onPress={() => navigation.navigate('NewTask')}>
-            <Text style={{fontSize: 30, fontWeight: 200}}>+</Text>
-          </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          style={{
+            paddingHorizontal: 15,
+            paddingVertical: 5,
+            marginLeft: 'auto',
+          }}
+          onPress={() => navigation.navigate('NewTask')}>
+          <Text style={{fontSize: 30, fontWeight: 200}}>+</Text>
+        </TouchableOpacity>
+
+        {data && (
           <FlatList
             data={data}
             renderItem={({item}) => (
@@ -55,8 +68,8 @@ export function TasksScreen({navigation}) {
               marginBottom: 50,
             }}
           />
-        </View>
-      )}
+        )}
+      </View>
     </>
   );
 }

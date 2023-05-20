@@ -7,29 +7,26 @@ import {TextInput, Slider, ToastAndroid} from 'react-native';
 import {TaskContext} from '../context/TaskContext';
 import {ItemTask} from './ItemTask';
 import DatePicker from 'react-native-date-picker';
+import {createTask} from '../services/tasks';
 export function NewTaskScreen({...props}) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState();
   const [place, setPlace] = useState();
   const [importance, setImportance] = useState(1);
-  const {data, setData} = useContext(TaskContext);
-  console.log(data);
 
   function handleAccept() {
     if (title && date && place) {
-      data &&
-        setData(prev => [
-          new Task(
-            prev.length,
-            title,
-            importance ? importance + 1 : 1,
-            date,
-            '21jansel@gmail.com',
-            place,
-          ),
-          ...prev,
-        ]);
+      const newTask = new Task(
+        0,
+        title,
+        importance ? importance + 1 : 1,
+        date,
+        '',
+        place,
+        'Write your notes',
+      );
+      createTask(newTask);
       ToastAndroid.show('Task created', ToastAndroid.SHORT);
     } else {
       ToastAndroid.show('Incorrect values', ToastAndroid.SHORT);

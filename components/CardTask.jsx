@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
 import {TouchableOpacity, View, Dimensions} from 'react-native';
 import {Text} from 'react-native-paper';
-import {NoteContext} from '../context/NotesContext';
+
 export function CardTask({item, index, setSelectedId}) {
-  const {id, title, importance, end_date, owner, place} = item;
-  const {notes} = useContext(NoteContext);
+  console.log('ITEM', item);
+  const {id, title, importance, endDate, owner, place, mdContent} = item;
+  const end_date = new Date(endDate);
   return (
     <TouchableOpacity
       onPress={() => setSelectedId(id)}
@@ -36,9 +37,7 @@ export function CardTask({item, index, setSelectedId}) {
           <View style={{width: 10}}></View>
           <Text style={{opacity: 0.6}}>{end_date.toLocaleDateString()}</Text>
         </View>
-        <Text numberOfLines={6}>
-          {notes.find(note => note.task == id)?.content}
-        </Text>
+        <Text numberOfLines={6}>{mdContent}</Text>
       </View>
     </TouchableOpacity>
   );

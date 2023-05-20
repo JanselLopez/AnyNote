@@ -1,13 +1,39 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList} from 'react-native';
 import {Text} from 'react-native-paper';
 import {Notification} from './Notification';
+import {getTasks} from '../services/tasks';
 export function NotificationScreen() {
-  const notifications =[1, 2, 3, 4, 5, 6, 7, 8, 9].map(item => `Notification - ${item}`);
+  const [notifications, setNotifications] = useState();
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const tasks = await getTasks();
+      setNotifications(
+        tasks
+          .filter(item => {
+            const today = new Date();
+            const date = new Date(item.endDate);
+
+            const isToday =
+              date.getDate() === today.getDate() &&
+              date.getMonth() === today.getMonth() &&
+              date.getFullYear() === today.getFullYear();
+
+            return isToday;
+          })
+          .map(item => `The tasks ${item.title} ends today`),
+      );
+    };
+    fetchTasks();
+  }, []);
   return (
-    <FlatList
-      data={notifications}
-      renderItem={Notification}
-      keyExtractor={item => `${item.id}_Noti`}></FlatList>
+    <>
+      {notifications && (
+        <FlatList
+          data={notifications}
+          renderItem={Notification}
+          keyExtractor={item => `${item}_Noti`}></FlatList>
+      )}
+    </>
   );
 }
